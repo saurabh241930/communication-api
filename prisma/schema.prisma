@@ -23,6 +23,8 @@ model Task {
   updated_at     DateTime   @updatedAt
   created_by     String?
   updated_by     String?
+  Template       Template?  @relation(fields: [templateId], references: [id])
+  templateId     String?    @db.ObjectId
 
   @@unique([jobId])
 }
@@ -47,6 +49,16 @@ model User {
   username   String   @unique
   email      String   @unique
   password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Template {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  text       String
+  variables  String[]
+  tasks      Task[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
