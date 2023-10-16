@@ -3,8 +3,10 @@ import sendEmail from '../handlers/email.handler';
 import QueueServices from './queue.service';
 import { PrismaClient } from '@prisma/client'
 import { Job } from 'bull';
+import TemplateService from './template.service';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
+const templateService = new TemplateService();
 
 
 
@@ -15,8 +17,10 @@ class EmailQueue {
     constructor(queueServices: QueueServices) {
         this.queueServices = queueServices;
 
-        this.queueServices.processQueue('email_notification', async (emailJob, done) => {
+        this.queueServices.processQueue('email_notification', async (emailJob: any, done: () => void) => {
             console.log('Processing email notification task');
+            const responseObj =  await templateService.getTemplate(emailJob.data.payload.email_details.templateName);
+            emailJob.data.payload.email_details.body = responseObj?.text;
             await sendEmail(emailJob);
             done();
         });

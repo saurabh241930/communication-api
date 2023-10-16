@@ -33,7 +33,6 @@ class QueueServices {
             console.log(`Job ${job.id} has been successfully processed`);
 
             await taskService.updateTaskStatus(job, true);
-            console.log("view", job)
         });
     }
 
