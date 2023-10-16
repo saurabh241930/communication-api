@@ -20,8 +20,9 @@ app.use(bodyParser.json());
 // Enable CORS for all routes
 app.use(cors());
 
-
-
+app.get('/', async (req, res) => {
+  res.status(200).json({ message: 'Welcome to communication API' });
+});
 app.post('/process', async (req, res) => {
   const { service_type, execution_type, payload } = req.body;
   let queueOpts;
