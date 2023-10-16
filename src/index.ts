@@ -7,11 +7,15 @@ import TaskService from './services/task.service'; // Import task service
 import cors from 'cors'; // Import the cors middleware
 import SmsQueue from './services/sms.service';
 import WhatsAppQueue from './services/whatsapp.service';
+import { PrismaClient } from '@prisma/client'
+import TemplateService from './services/template.service';
+
+const prisma = new PrismaClient()
 
 const app = express();
 const userService = new UserService(); // Instantiate the user service
 const taskService = new TaskService(); // Instantiate the task service
-
+const templateService = new TemplateService(); 
 
 
 
@@ -26,7 +30,6 @@ app.get('/', async (req, res) => {
 app.post('/process', async (req, res) => {
   const { service_type, execution_type, payload } = req.body;
   let queueOpts;
-
   if (service_type === "email") {
     queueOpts = {
       limiter: {
@@ -133,6 +136,17 @@ app.get('/tasks/:taskId', async (req, res) => {
     res.status(200).json(task);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/add-template', async (req, res) => {
+  try {
+    const newTemplate = await templateService.addTemplate(req.body);
+
+    res.status(201).json({ message: 'Template created successfully', template: newTemplate });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: 'Failed to create the template' });
   }
 });
 
