@@ -1,5 +1,5 @@
 // task.service.ts
-import { $Enums, PrismaClient, TaskType } from '@prisma/client';
+import { PrismaClient, TaskType } from '@prisma/client';
 import { Job } from 'bull';
 
 const prisma = new PrismaClient();
@@ -17,7 +17,7 @@ class TaskService {
 
   async updateTaskStatus(job: Job, jobStatus: Boolean) {
     const {id , name } = job;
-    let jobType: $Enums.TaskType;
+    let jobType: TaskType;
     switch (name) {
       case "email_notification":
         jobType = "EMAIL"
